@@ -1,0 +1,10 @@
+.idea
+dist/*
+node_modules
+npm-debug.log
+.vscode
+*.swo
+*.swp
+.DS_Store
+package-lock.json
+examples/candle_iv_data.json
