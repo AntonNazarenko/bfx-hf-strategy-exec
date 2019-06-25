@@ -10,7 +10,7 @@ const PromiseThrottle = require('promise-throttle')
 
 const {
   onSeedCandle, onCandle, onCandleUpdate, onTrade
-} = require('./updates')
+} = require('bfx-hf-strategy')
 
 const pt = new PromiseThrottle({
   requestsPerSecond: 10.0 / 60.0, // taken from docs
