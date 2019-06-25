@@ -29,9 +29,9 @@ module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
 
   const cWidth = candleWidth(tf)
   const now = Date.now()
-  const seedStart = now - (50000 * cWidth)
+  const seedStart = now - (5000 * cWidth)
 
-  for (let i = 0; i < 50; i += 1) {
+  for (let i = 0; i < 5; i += 1) {
     let seededCandles = 0
     let candle
 
