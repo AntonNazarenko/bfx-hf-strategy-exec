@@ -9,29 +9,30 @@ const _reverse = require('lodash/reverse')
 const PromiseThrottle = require('promise-throttle')
 
 const {
-  onSeedCandle, onCandle, onCandleUpdate, onTrade
+  onSeedCandle, onCandle, onCandleUpdate, onTrade, indicatorValues
 } = require('bfx-hf-strategy')
 
+const CANDLE_FETCH_LIMIT = 1000
 const pt = new PromiseThrottle({
   requestsPerSecond: 10.0 / 60.0, // taken from docs
   promiseImplementation: Promise
 })
 
 module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
-  const { symbol, tf, includeTrades } = args
+  const { symbol, tf, includeTrades, seedCandleCount = 5000 } = args
   const candleKey = `trade:${tf}:${symbol}`
   const messages = []
   let strategyState = strategy
   let lastCandle = null
   let processing = false
 
-  debug('seeding with last ~50000 candles...')
+  debug('seeding with last ~%d candles...', seedCandleCount)
 
   const cWidth = candleWidth(tf)
   const now = Date.now()
-  const seedStart = now - (5000 * cWidth)
+  const seedStart = now - (seedCandleCount * cWidth)
 
-  for (let i = 0; i < 5; i += 1) {
+  for (let i = 0; i < Math.ceil(seedCandleCount / CANDLE_FETCH_LIMIT); i += 1) {
     let seededCandles = 0
     let candle
 
@@ -43,9 +44,9 @@ module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
         symbol,
         timeframe: tf,
         query: {
+          limit: CANDLE_FETCH_LIMIT,
           start,
           end,
-          limit: 1000
         }
       }))
     )
