@@ -23,8 +23,8 @@ const getFees = async (Manager) => {
   const [ fees ] = await Manager.rest.accountInfo()
   const { maker_fees, taker_fees } = fees
   return {
-    makerFees: maker_fees,
-    takerFees: taker_fees
+    makerFee: maker_fees,
+    takerFee: taker_fees
   }
 }
 
