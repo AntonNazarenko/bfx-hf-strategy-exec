@@ -9,7 +9,7 @@ const _reverse = require('lodash/reverse')
 const PromiseThrottle = require('promise-throttle')
 
 const {
-  onSeedCandle, onCandle, onCandleUpdate, onTrade, indicatorValues, addFeeData,
+  onSeedCandle, onCandle, onCandleUpdate, onTrade, indicatorValues
 } = require('bfx-hf-strategy')
 
 const CANDLE_FETCH_LIMIT = 1000
