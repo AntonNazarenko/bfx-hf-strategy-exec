@@ -9,7 +9,7 @@ const _reverse = require('lodash/reverse')
 const PromiseThrottle = require('promise-throttle')
 
 const {
-  onSeedCandle, onCandle, onCandleUpdate, onTrade, indicatorValues
+  onSeedCandle, onCandle, onCandleUpdate, onTrade, indicatorValues, addFeeData,
 } = require('bfx-hf-strategy')
 
 const CANDLE_FETCH_LIMIT = 1000
@@ -18,7 +18,17 @@ const pt = new PromiseThrottle({
   promiseImplementation: Promise
 })
 
-module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
+
+const getFees = async (Manager) => {
+  const [ fees ] = await Manager.rest.accountInfo()
+  const { maker_fees, taker_fees } = fees
+  return {
+    makerFees: maker_fees,
+    takerFees: taker_fees
+  }
+}
+
+const exec = async (strategy = {}, wsManager = {}, args = {}) => {
   const { symbol, tf, includeTrades, seedCandleCount = 5000 } = args
   const candleKey = `trade:${tf}:${symbol}`
   const messages = []
@@ -31,7 +41,7 @@ module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
   const cWidth = candleWidth(tf)
   const now = Date.now()
   const seedStart = now - (seedCandleCount * cWidth)
-
+  
   for (let i = 0; i < Math.ceil(seedCandleCount / CANDLE_FETCH_LIMIT); i += 1) {
     let seededCandles = 0
     let candle
@@ -160,4 +170,9 @@ module.exports = async (strategy = {}, wsManager = {}, args = {}) => {
 
     return nextSocket
   })
+}
+
+module.exports = {
+  exec,
+  getFees
 }
